@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter_application_1/checklist.dart';
 import 'package:flutter_application_1/components.dart';
+import 'package:flutter_application_1/signinpage.dart';
 
 class Foodcourt {
   String name;
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
-           Padding(
+          Padding(
             padding: EdgeInsets.only(top: 50.0, left: 15, right: 15),
             child: Text(
               'Select Food Court',
@@ -98,6 +99,20 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 50.0),
+            child: ButtonBox(
+                name: "Sign Out",
+                color: Colors.teal.shade700,
+                onpress: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => SignInPage(),
+                        ),
+                      );
+                }),
+          )
         ],
       ),
     );

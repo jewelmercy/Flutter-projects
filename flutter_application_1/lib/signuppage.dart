@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components.dart';
+import 'package:flutter_application_1/firebase.dart';
+import 'package:flutter_application_1/homepage.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key? key}) : super(key: key);
@@ -10,6 +13,41 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool checkbox = false;
+   String _email = '';
+  String _password = '';
+  String _name ="";
+  FireBaselog firebase = FireBaselog();
+
+  Future<void> register(BuildContext context, String email,String name, String password) async {
+    // setState(() {
+    //   _isProcessing = true;
+    // });
+
+ if (email == "" || password == "" || name == "") {
+      snackbar(context, "Email or password cannot be empty", 500);
+      return;
+    }
+
+//register new user using name, email and password and add to the firebase
+    User? user = await firebase.registerUsingEmailPassword(
+      context: context,
+      name: name,
+      email: email,
+      password: password,
+    );
+
+
+    if (user != null) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            useremail: user.email.toString(),
+          ),
+        ),
+        ModalRoute.withName('/'),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -54,13 +92,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           keyboardtype: TextInputType.text,
                           icon: Icon(Icons.person_outline),
                           onchange: (value) {
-                            print(value);
+                            _name= value;
                           },
                         ),
                         TextFieldbox(
                           hinttext: 'Password',
                           onchange: (value) {
-                            print(value);
+                            _password = value;
                           },
                           obscuretext: true,
                           keyboardtype: TextInputType.number,
@@ -69,7 +107,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         TextFieldbox(
                           hinttext: 'Email',
                           onchange: (value) {
-                            print(value);
+                            _email = value;
                           },
                           obscuretext: false,
                           keyboardtype: TextInputType.emailAddress,
@@ -111,6 +149,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      register(context,_email,_name, _password);
                     },
                     child: Container(
                         width: 300,
